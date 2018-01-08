@@ -9,6 +9,8 @@ import '../style/materialize.css';
 import '../style/react-range.css';
 import '../style/style.css';
 
+//console.log("Testing Cache Busting - Chunk Hashing!");
+
 const App = () => {
   const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 
