@@ -1,12 +1,23 @@
 const express = require('express');
-const webpackMiddleware = require('webpack-dev-middleware');
-const webpack = require('webpack');
-const webpackConfig = require('./webpack.config.js');
+const path = require('path');
 
 const app = express();
 
-app.use(webpackMiddleware(webpack(webpackConfig)));
+// process.env.NODE_ENV may change depending on where we are deploying the app, eg. Heroku, DigitalOcean, Amazon AWS, etc... 
+if (process.env.NODE_ENV !== 'production') {
+    // Requires for development.
+    const webpackMiddleware = require('webpack-dev-middleware');
+    const webpack = require('webpack');
+    const webpackConfig = require('./webpack.config.js');
 
-app.listen(3050, () => {
+    app.use(webpackMiddleware(webpack(webpackConfig)));
+} else {
+    app.use(express.static('dist'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'dist/index.html'));
+    });
+}
+
+app.listen(process.env.PORT || 3050, () => {
     console.log('App initialized!');
 });
